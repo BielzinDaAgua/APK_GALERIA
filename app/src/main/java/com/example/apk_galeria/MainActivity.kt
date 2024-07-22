@@ -3,15 +3,14 @@ package com.example.apk_galeria
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -32,66 +31,63 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun APKGaleriaApp() {
-    var currentIndex by remember { mutableStateOf(0) }
+    var currentIndex by remember { mutableIntStateOf(0) }
     val artworks = listOf(
         Artwork(
             id = 1,
-            imageRes = R.drawable.obra, // Substitua pelo ID correto da imagem
+            imageRes = R.drawable.obra,
             title = "Still Life of Blue Rose and Other Flowers",
             artist = "Owen Scott",
             year = 2021
         ),
         Artwork(
             id = 2,
-            imageRes = R.drawable.obra2, // Substitua pelo ID correto da imagem
+            imageRes = R.drawable.obra2,
             title = "Another Artwork Title",
             artist = "Another Artist",
             year = 2020
         ),
         Artwork(
             id = 3,
-            imageRes = R.drawable.obra3, // Substitua pelo ID correto da imagem
+            imageRes = R.drawable.obra3,
             title = "Third Artwork Title",
             artist = "Third Artist",
             year = 2019
         )
-        // Adicione mais obras de arte conforme necessário
     )
 
     Surface(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
-                .padding(16.dp),
+                .padding(16.dp)
+                .fillMaxSize(),
             verticalArrangement = Arrangement.SpaceBetween,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Parede de obras de arte
-            Box(
+            // Imagem da obra de arte
+            BoxWithConstraints(
                 modifier = Modifier
                     .weight(1f)
                     .fillMaxWidth()
                     .padding(16.dp)
-                    .border(BorderStroke(8.dp, MaterialTheme.colorScheme.onSurface), shape = RoundedCornerShape(16.dp))
-                    .padding(16.dp)
-                    .background(MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(16.dp))
             ) {
+                val maxHeight = maxHeight
                 Image(
                     painter = painterResource(id = artworks[currentIndex].imageRes),
                     contentDescription = artworks[currentIndex].title,
                     modifier = Modifier
-                        .fillMaxSize()
-                        .border(BorderStroke(2.dp, MaterialTheme.colorScheme.onSurface), shape = RoundedCornerShape(16.dp)),
-                    contentScale = ContentScale.Crop
+                        .fillMaxWidth()
+                        .heightIn(max = maxHeight)
+                        .clip(RoundedCornerShape(16.dp)),
+                    contentScale = ContentScale.Fit
                 )
             }
-
-            Spacer(modifier = Modifier.height(16.dp))
 
             // Descritor de obras de arte
             Column(
                 modifier = Modifier
-                    .padding(16.dp)
-                    .align(Alignment.CenterHorizontally)
+                    .padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
                     text = artworks[currentIndex].title,
@@ -106,12 +102,12 @@ fun APKGaleriaApp() {
                 )
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
-
             // Controlador de exibição
             Row(
                 horizontalArrangement = Arrangement.SpaceEvenly,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 16.dp)
             ) {
                 Button(
                     onClick = {
@@ -122,7 +118,7 @@ fun APKGaleriaApp() {
                     },
                     modifier = Modifier
                         .weight(1f)
-                        .padding(end = 8.dp),
+                        .padding(8.dp),
                     shape = RoundedCornerShape(8.dp)
                 ) {
                     Text("Previous")
@@ -136,7 +132,7 @@ fun APKGaleriaApp() {
                     },
                     modifier = Modifier
                         .weight(1f)
-                        .padding(start = 8.dp),
+                        .padding(8.dp),
                     shape = RoundedCornerShape(8.dp)
                 ) {
                     Text("Next")
